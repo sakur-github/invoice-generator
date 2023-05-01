@@ -1,4 +1,6 @@
-﻿using InvoiceGenerator.Models.Configuration;
+﻿using InvoiceGenerator.Models;
+using InvoiceGenerator.Models.Configuration;
+using InvoiceGenerator.Models.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,21 +48,26 @@ namespace InvoiceGenerator.Manager
             if (File.Exists(configurationPath))
                 configurationJson = File.ReadAllText(configurationPath);
 
-            if(configurationJson == null)
+            if (configurationJson == null)
             {
                 File.WriteAllText(configurationPath, InvoiceConfiguration.Default.ToJson());
                 configurationJson = File.ReadAllText(configurationPath);
             }
 
-            if(configurationJson == null)
+            if (configurationJson == null)
                 throw new Exception("Error when creating and then loading configuration file!");
 
             InvoiceConfiguration? loadedConfiguration = InvoiceConfiguration.FromJson(configurationJson);
 
-            if(loadedConfiguration == null)
+            if (loadedConfiguration == null)
                 throw new Exception("Error when parsing configuration file!");
 
             Configuration = loadedConfiguration;
+        }
+
+        public Invoice CreateInvoice(InvoiceInstanceConfiguration instance, TimeExport timeExport)
+        {
+            return new Invoice(instance, Configuration, timeExport);
         }
     }
 }

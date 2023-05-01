@@ -1,5 +1,9 @@
 ﻿using InvoiceGenerator.Manager;
+using InvoiceGenerator.Models;
 using InvoiceGenerator.Models.Configuration;
+using InvoiceGenerator.Models.Data;
+using QuestPDF.Fluent;
+using System.Diagnostics;
 
 namespace InvoiceGenerator
 {
@@ -7,12 +11,20 @@ namespace InvoiceGenerator
     {
         static void Main(string[] args)
         {
+            if(args.Length == 0)
+            {
+                args = new string[] { "Clockify_Time_Report_Summary_01_03_2023-31_03_2023.csv" };
+            }
+
             try
             {
                 string result = Run(args[0]);
 
-                Console.WriteLine(result);
-                Thread.Sleep(2000);
+                if (result != string.Empty)
+                {
+                    Console.WriteLine(result);
+                    Thread.Sleep(2000);
+                }
             }
             catch (Exception exception)
             {
@@ -33,7 +45,23 @@ namespace InvoiceGenerator
             if (!File.Exists(clockifyExportPath))
                 throw new ArgumentException($"The following provided clockify export path could not be read from {clockifyExportPath}");
 
-            throw new NotImplementedException();
+            TimeExport timeExport = TimeExport.FromCsv(File.ReadAllText(clockifyExportPath));
+
+            Invoice invoice = manager.CreateInvoice(instanceConfiguration, timeExport);
+            invoice.GeneratePdf(invoice.FileName);
+
+            OpenFile(invoice.FileName);
+
+            return string.Empty;
+        }
+
+        private static void OpenFile(string filename)
+        {
+            Process process = new Process();
+
+            process.StartInfo = new ProcessStartInfo(filename) { UseShellExecute = true };
+
+            process.Start();
         }
     }
 }
