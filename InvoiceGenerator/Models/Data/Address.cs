@@ -1,8 +1,8 @@
 ﻿namespace InvoiceGenerator.Models.Data
 {
-    internal class Address
+    public class Address
     {
-        internal string? FirstLine { get; set; }
-        internal string? SecondLine { get; set; }
+        public string? FirstLine { get; set; }
+        public string? SecondLine { get; set; }
     }
 }

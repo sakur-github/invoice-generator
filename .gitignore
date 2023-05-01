@@ -1,3 +1,9 @@
 .vs/
 /InvoiceGenerator/bin/*
 /InvoiceGenerator/obj/*
+TestResults
+TestResults/*
+/TestResults/*
+/TestResults
+/InvoiceGeneratorTests/bin/*
+/InvoiceGeneratorTests/obj/*

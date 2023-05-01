@@ -1,6 +1,6 @@
 ﻿namespace InvoiceGenerator.Models.Data
 {
-    internal class Company
+    public class Company
     {
         public string? Name { get; set; }
         public Address? Address { get; set; }

@@ -2,11 +2,11 @@
 
 namespace InvoiceGenerator.Models
 {
-    internal class Invoice
+    public class Invoice
     {
-        internal string InvoiceNumber { get; set; }
-        internal DateTime InvoiceDate { get; set; }
-        internal InvoiceConfiguration Configuration { get; set; }
+        public string InvoiceNumber { get; set; }
+        public DateTime InvoiceDate { get; set; }
+        public InvoiceConfiguration Configuration { get; set; }
 
         public Invoice(string invoiceNumber, DateTime invoiceDate, InvoiceConfiguration configuration) 
         {

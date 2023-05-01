@@ -1,6 +1,6 @@
 ﻿namespace InvoiceGenerator.Models.Data
 {
-    internal class PaymentInformation
+    public class PaymentInformation
     {
         public string? Bic { get; set; }
         public string? Iban { get; set; }

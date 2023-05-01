@@ -4,7 +4,7 @@ using System.Text.Json;
 
 namespace InvoiceGenerator.Models.Configuration
 {
-    internal class InvoiceConfiguration
+    public class InvoiceConfiguration
     {
         public string? LogoUrl { get; set; }
         public int DaysToPay { get; set; }
@@ -14,7 +14,7 @@ namespace InvoiceGenerator.Models.Configuration
         public Company? Receiver { get; set; }
         public PaymentInformation? PaymentInformation { get; set; }
 
-        internal static InvoiceConfiguration Default { get; } = new InvoiceConfiguration
+        public static InvoiceConfiguration Default { get; } = new InvoiceConfiguration
         {
             LogoUrl = "https://avatars.githubusercontent.com/u/71601343",
             DaysToPay = 30,
@@ -59,12 +59,12 @@ namespace InvoiceGenerator.Models.Configuration
             }
         };
 
-        internal static InvoiceConfiguration? FromJson(string json)
+        public static InvoiceConfiguration? FromJson(string json)
         {
             return JsonSerializer.Deserialize<InvoiceConfiguration>(json);
         }
 
-        internal string ToJson()
+        public string ToJson()
         {
             JsonSerializerOptions options = new JsonSerializerOptions
             {
