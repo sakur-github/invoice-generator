@@ -1,7 +1,9 @@
-﻿using InvoiceGenerator.Manager;
+﻿using InvoiceGenerator.Helpers;
+using InvoiceGenerator.Manager;
 using InvoiceGenerator.Models;
 using InvoiceGenerator.Models.Configuration;
 using InvoiceGenerator.Models.Data;
+using QuestPDF.Drawing;
 using QuestPDF.Fluent;
 using System.Diagnostics;
 
@@ -47,12 +49,30 @@ namespace InvoiceGenerator
 
             TimeExport timeExport = TimeExport.FromCsv(File.ReadAllText(clockifyExportPath));
 
+            SetupFont("Roboto", "Regular", "Medium", "Bold").Wait();
+
             Invoice invoice = manager.CreateInvoice(instanceConfiguration, timeExport);
             invoice.GeneratePdf(invoice.FileName);
 
             OpenFile(invoice.FileName);
 
             return string.Empty;
+        }
+
+        private static async Task SetupFont(string name, params string[] variations)
+        {
+            FontHelper font = await FontHelper.FromFontFamilyNameAsync(name);
+
+            foreach (string variation in variations)
+            {
+                byte[]? fontBytes = await font.GetVariationAsync(variation);
+
+                if (fontBytes == null)
+                    throw new Exception($"Font not found: {variation}");
+
+                using (MemoryStream stream = new MemoryStream(fontBytes))
+                    FontManager.RegisterFontWithCustomName($"{name}-{variation}", stream);
+            }
         }
 
         private static void OpenFile(string filename)

@@ -59,9 +59,9 @@ namespace InvoiceGenerator.Models
 
         private void ComposeHeader(IContainer container)
         {
-            TextStyle header1 = TextStyle.Default.FontSize(24).SemiBold().FontColor("151515").FontFamily("Roboto");
-            TextStyle header2 = TextStyle.Default.FontSize(16).SemiBold().FontColor("151515");
-            TextStyle boldText = TextStyle.Default.FontSize(12).SemiBold().FontColor("151515");
+            TextStyle header1 = TextStyle.Default.FontSize(24).Bold().FontColor("151515").FontFamily("Roboto-Bold");
+            TextStyle header2 = TextStyle.Default.FontSize(16).SemiBold().FontColor("151515").FontFamily("Roboto-SemiBold");
+            TextStyle boldText = TextStyle.Default.FontSize(12).SemiBold().FontColor("151515").FontFamily("Roboto");
 
             container.Row(row =>
             {
