@@ -1,4 +1,5 @@
-﻿using InvoiceGenerator.Models.Data;
+﻿using InvoiceGenerator.Helpers;
+using InvoiceGenerator.Models.Data;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 
@@ -13,6 +14,8 @@ namespace InvoiceGenerator.Models.Configuration
         public Company? Sender { get; set; }
         public Company? Receiver { get; set; }
         public PaymentInformation? PaymentInformation { get; set; }
+        public int DefaultUnitPrice { get; set; }
+        public Dictionary<string, int>? UnitPriceOverride { get; set; }
 
         public static InvoiceConfiguration Default { get; } = new InvoiceConfiguration
         {
@@ -56,6 +59,12 @@ namespace InvoiceGenerator.Models.Configuration
                 BankgiroNumber = "1232-4567",
                 Bic = "SWEDSESS",
                 Iban = "SE3550000000054910000003"
+            },
+            DefaultUnitPrice = 750,
+            UnitPriceOverride = new Dictionary<string, int>
+            {
+                { "Benny Karlsson", 1000 },
+                { "Henrik Stig", 500 }
             }
         };
 
@@ -73,6 +82,25 @@ namespace InvoiceGenerator.Models.Configuration
             };
 
             return JsonSerializer.Serialize(this, options: options);
+        }
+
+        public byte[] GetImageBytes()
+        {
+            if (LogoUrl == null)
+                return new byte[0];
+
+            return ApiHelper.Instance.GetImageBytes(LogoUrl).Result;
+        }
+
+        public int GetUnitPrice(string name)
+        {
+            if (UnitPriceOverride == null)
+                return DefaultUnitPrice;
+
+            if (UnitPriceOverride.TryGetValue(name, out int price))
+                return price;
+
+            return DefaultUnitPrice;
         }
     }
 }

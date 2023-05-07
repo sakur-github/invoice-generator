@@ -21,7 +21,7 @@ namespace InvoiceGenerator.Helpers
 
         public static async Task<FontHelper> FromFontFamilyNameAsync(string fontFamilyName)
         {
-            FontListResponse fontListResponse = await GoogleApiHelper.Instance.GetFontList(fontFamilyName);
+            FontListResponse fontListResponse = await ApiHelper.Instance.GetFontList(fontFamilyName);
             return new FontHelper(fontListResponse, fontFamilyName);
         }
 
@@ -35,7 +35,7 @@ namespace InvoiceGenerator.Helpers
             if(fileRef == null || fileRef.Url == null)
                 return null;
 
-            return await GoogleApiHelper.Instance.GetSingleFontVariationAsync(fileRef.Url);
+            return await ApiHelper.Instance.GetSingleFontVariationAsync(fileRef.Url);
         }
     }
 }

@@ -17,5 +17,32 @@ namespace InvoiceGenerator.Helpers
         {
             return date.ToString("dd-MM-yyyy");
         }
+
+        public static string ToPriceString(this int price, string? currency = null)
+        {
+            string reference = price.ToString();
+
+            StringBuilder result = new StringBuilder();
+
+            int stepDistance = 0;
+
+            for (int i = reference.Length - 1; i >= 0; i--)
+            {
+                result.Insert(0, reference[i]);
+
+                if (stepDistance > 1)
+                {
+                    if ((stepDistance + 1) % 3 == 0)
+                        result.Insert(0, " ");
+                }
+
+                stepDistance++;
+            }
+
+            if (currency != null)
+                result.Append($" {currency}");
+
+            return result.ToString();
+        }
     }
 }

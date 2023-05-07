@@ -1,4 +1,5 @@
 ﻿using InvoiceGenerator.Helpers;
+using InvoiceGenerator.Models.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -30,7 +31,7 @@ namespace InvoiceGenerator.Models.Data
                     Amount = (int)Math.Round(decimal.Parse(values[4].GetUnescapedValue(), CultureInfo.InvariantCulture))
                 };
 
-                if(time.Client == "(Without client)") // Clockify exports null as "(Without client)"
+                if (time.Client == "(Without client)") // Clockify exports null as "(Without client)"
                     time.Client = null;
 
                 times.Add(time);
@@ -39,6 +40,17 @@ namespace InvoiceGenerator.Models.Data
             exportedTimes.Times = times;
 
             return exportedTimes;
+        }
+
+        public int GetTotalCost(InvoiceConfiguration configuration)
+        {
+            if (Times == null)
+                throw new GenerationException("Trying to get total cost but there is no time data");
+
+            if(Times.Any(time => time.Name == null))
+                throw new GenerationException("Trying to get total cost but there is a time entry without a name");
+
+            return Times.Sum(time => time.Amount * configuration.GetUnitPrice(time.Name!));
         }
     }
 }

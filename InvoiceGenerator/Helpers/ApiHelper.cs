@@ -8,22 +8,22 @@ using System.Threading.Tasks;
 
 namespace InvoiceGenerator.Helpers
 {
-    internal class GoogleApiHelper
+    internal class ApiHelper
     {
-        public static GoogleApiHelper Instance
+        public static ApiHelper Instance
         {
             get
             {
                 if (_instance == null)
-                    _instance = new GoogleApiHelper();
+                    _instance = new ApiHelper();
                 return _instance;
             }
         }
 
-        private static GoogleApiHelper? _instance;
+        private static ApiHelper? _instance;
         private HttpClient client;
 
-        public GoogleApiHelper()
+        public ApiHelper()
         {
             client = new HttpClient();
             client.DefaultRequestHeaders.Add("user-agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36");
@@ -70,6 +70,25 @@ namespace InvoiceGenerator.Helpers
             else
             {
                 throw new Exception($"Error when getting fonts with variationUrl: {variationUrl}");
+            }
+        }
+
+        public async Task<byte[]> GetImageBytes(string url)
+        {
+            HttpResponseMessage response = await client.GetAsync(url);
+
+            if (response.IsSuccessStatusCode)
+            {
+                using (Stream stream = await response.Content.ReadAsStreamAsync())
+                using (MemoryStream memory = new MemoryStream())
+                {
+                    stream.CopyTo(memory);
+                    return memory.ToArray();
+                }
+            }
+            else
+            {
+                throw new Exception($"Error when image with url: {url}");
             }
         }
     }

@@ -54,7 +54,7 @@ namespace InvoiceGenerator
             Invoice invoice = manager.CreateInvoice(instanceConfiguration, timeExport);
             invoice.GeneratePdf(invoice.FileName);
 
-            OpenFile(invoice.FileName);
+            //OpenFile(invoice.FileName);
 
             return string.Empty;
         }
