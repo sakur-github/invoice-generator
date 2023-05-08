@@ -137,14 +137,14 @@ namespace InvoiceGenerator.Models
                     row.RelativeItem().AlignLeft().Column(column =>
                     {
                         column.Item().Text("Sender reference".ToCorrectLanguage(this)).Style(boldText);
-                        column.Item().Text(GeneralConfiguration.Sender?.Reference?.Name ?? "[missing sender reference name]");
-                        column.Item().Text(GeneralConfiguration.Sender?.Reference?.Email ?? "[missing sender reference email]");
+                        column.Item().Text(GeneralConfiguration.Sender?.Reference?.Name ?? "[missing sender reference name]").Style(regularText);
+                        column.Item().Text(GeneralConfiguration.Sender?.Reference?.Email ?? "[missing sender reference email]").Style(regularText);
 
                         column.Item().AlignRight().MinHeight(20);
 
                         column.Item().Text("Recipient reference".ToCorrectLanguage(this)).Style(boldText);
-                        column.Item().Text(GeneralConfiguration.Receiver?.Reference?.Name ?? "[missing receiver reference name]");
-                        column.Item().Text(GeneralConfiguration.Receiver?.Reference?.Email ?? "[missing receiver reference email]");
+                        column.Item().Text(GeneralConfiguration.Receiver?.Reference?.Name ?? "[missing receiver reference name]").Style(regularText);
+                        column.Item().Text(GeneralConfiguration.Receiver?.Reference?.Email ?? "[missing receiver reference email]").Style(regularText);
                     });
 
                     row.RelativeItem().AlignRight().Column(column =>
