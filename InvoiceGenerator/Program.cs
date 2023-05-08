@@ -13,25 +13,29 @@ namespace InvoiceGenerator
     {
         static void Main(string[] args)
         {
-            if(args.Length == 0)
+            if (args.Length == 0)
             {
-                args = new string[] { "Clockify_Time_Report_Summary_01_03_2023-31_03_2023.csv" };
-            }
-
-            try
-            {
-                string result = Run(args[0]);
-
-                if (result != string.Empty)
-                {
-                    Console.WriteLine(result);
-                    Thread.Sleep(2000);
-                }
-            }
-            catch (Exception exception)
-            {
-                Console.WriteLine(exception.ToString());
+                //args = new string[] { "Clockify_Time_Report_Summary_01_03_2023-31_03_2023.csv" };
+                Console.WriteLine("No time report was provided. Please drag and drop the time report on the .exe file to create an invoice from it.");
                 Console.ReadKey();
+            }
+            else
+            {
+                try
+                {
+                    string result = Run(args[0]);
+
+                    if (result != string.Empty)
+                    {
+                        Console.WriteLine(result);
+                        Thread.Sleep(2000);
+                    }
+                }
+                catch (Exception exception)
+                {
+                    Console.WriteLine(exception.ToString());
+                    Console.ReadKey();
+                }
             }
         }
 
@@ -54,7 +58,7 @@ namespace InvoiceGenerator
             Invoice invoice = manager.CreateInvoice(instanceConfiguration, timeExport);
             invoice.GeneratePdf(invoice.FileName);
 
-            //OpenFile(invoice.FileName);
+            OpenFile(invoice.FileName);
 
             return string.Empty;
         }
