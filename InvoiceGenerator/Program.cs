@@ -13,9 +13,10 @@ namespace InvoiceGenerator
     {
         static void Main(string[] args)
         {
+            args = new string[] { "Clockify_Time_Report_Summary_01_03_2023-31_03_2023.csv" };
+
             if (args.Length == 0)
             {
-                //args = new string[] { "Clockify_Time_Report_Summary_01_03_2023-31_03_2023.csv" };
                 Console.WriteLine("No time report was provided. Please drag and drop the time report on the .exe file to create an invoice from it.");
                 Console.ReadKey();
             }

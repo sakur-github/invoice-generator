@@ -32,6 +32,7 @@ namespace InvoiceGenerator.Helpers
             { "Email:", "Mail:" },
             { "VAT%", "Moms %" },
             { "VAT", "Moms" },
+            { "Comment:", "Kommentar:" },
         };
 
         public static string ToCorrectLanguage(this string text, Invoice invoice)

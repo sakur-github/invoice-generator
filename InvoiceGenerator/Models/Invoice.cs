@@ -296,6 +296,20 @@ namespace InvoiceGenerator.Models
                         });
                     });
                 });
+
+                if(!string.IsNullOrEmpty(InstanceConfiguration.Comment))
+                {
+                    column.Item().MinHeight(30);
+
+                    column.Item().Background("F5F5F5").Padding(tablePadding).Row(row =>
+                    {
+                        row.RelativeItem().Column(column =>
+                        {
+                            column.Item().AlignLeft().Text("Comment:".ToCorrectLanguage(this)).Style(boldText);
+                            column.Item().AlignLeft().Text(InstanceConfiguration.Comment).Style(regularText);
+                        });
+                    });
+                }
             });
         }
 

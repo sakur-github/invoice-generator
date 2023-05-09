@@ -10,6 +10,7 @@ namespace InvoiceGenerator.Models.Configuration
     public class InvoiceInstanceConfiguration
     {
         public string? Number { get; set; }
+        public string? Comment { get; set; }
         public DateTime IssueDate { get; set; } = DateTime.Now;
         public bool? CanBeConverted { get; set; } = true;
 
