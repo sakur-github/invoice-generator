@@ -10,10 +10,12 @@
 
   <ItemGroup>
     <None Remove="Data\ClockifyExport.csv" />
+    <None Remove="Data\ClockifyExport2.csv" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Data\ClockifyExport.csv" />
+    <EmbeddedResource Include="Data\ClockifyExport2.csv" />
   </ItemGroup>
 
   <ItemGroup>

@@ -9,5 +9,6 @@ namespace InvoiceGeneratorTests.Utilities
     internal class DataFileNames
     {
         internal const string ClockifyExport = "ClockifyExport.csv";
+        internal const string ClockifyExport2 = "ClockifyExport2.csv";
     }
 }

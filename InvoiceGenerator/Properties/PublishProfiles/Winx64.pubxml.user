@@ -3,12 +3,4 @@
 https://go.microsoft.com/fwlink/?LinkID=208121.
 -->
 <Project>
-  <PropertyGroup>
-<<<<<<< Updated upstream
-    <History>True|2023-05-09T11:33:57.8759184Z;True|2023-05-09T13:32:50.3649651+02:00;True|2023-05-09T13:22:06.5442405+02:00;True|2023-05-08T19:27:00.3859182+02:00;</History>
-=======
-    <History>True|2023-05-09T11:46:07.0258862Z;True|2023-05-09T13:33:57.8759184+02:00;True|2023-05-09T13:32:50.3649651+02:00;True|2023-05-09T13:22:06.5442405+02:00;True|2023-05-08T19:27:00.3859182+02:00;</History>
->>>>>>> Stashed changes
-    <LastFailureDetails />
-  </PropertyGroup>
 </Project>

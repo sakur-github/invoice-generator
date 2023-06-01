@@ -37,5 +37,25 @@ namespace InvoiceGeneratorTests
             Assert.IsNull(thirdTime.Client);
             Assert.AreEqual(31, thirdTime.Amount);
         }
+
+        [TestMethod]
+        public void LoadFromString2()
+        {
+            string? csv = FileProvider.ReadString(DataFileNames.ClockifyExport2);
+
+            Assert.IsNotNull(csv, $"Error when reading the testfile {DataFileNames.ClockifyExport2}");
+
+            TimeExport timeExport = TimeExport.FromCsv(csv);
+
+            Assert.IsNotNull(timeExport);
+            Assert.IsNotNull(timeExport.Times);
+            Assert.AreEqual(1, timeExport.Times.Count);
+
+            Time firstTime = timeExport.Times[0];
+            Assert.AreEqual("Adam Tovatt", firstTime.Name);
+            Assert.AreEqual("Retriva", firstTime.Project);
+            Assert.IsNull(firstTime.Client);
+            Assert.AreEqual(4, firstTime.Amount);
+        }
     }
 }
