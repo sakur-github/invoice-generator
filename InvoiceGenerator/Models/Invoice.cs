@@ -71,7 +71,7 @@ namespace InvoiceGenerator.Models
                 {
                     column.Spacing(-4);
 
-                    column.Item().AlignRight().Text($"INVOICE").Style(header2);
+                    column.Item().AlignRight().Text($"INVOICE".ToCorrectLanguage(this)).Style(header2);
 
                     column.Item().AlignRight().MinHeight(15);
 
@@ -79,19 +79,19 @@ namespace InvoiceGenerator.Models
 
                     column.Item().AlignRight().MaxWidth(rowWidth).Row(row =>
                     {
-                        row.RelativeItem().AlignLeft().Text("Invoice number").Style(boldText);
+                        row.RelativeItem().AlignLeft().Text("Invoice number".ToCorrectLanguage(this)).Style(boldText);
                         row.RelativeItem().AlignRight().Text(InstanceConfiguration.Number).Style(regularText);
                     });
 
                     column.Item().AlignRight().MaxWidth(rowWidth).Row(row =>
                     {
-                        row.RelativeItem().AlignLeft().Text("Invoice date").Style(boldText);
+                        row.RelativeItem().AlignLeft().Text("Invoice date".ToCorrectLanguage(this)).Style(boldText);
                         row.RelativeItem().AlignRight().Text(InstanceConfiguration.IssueDate.ToString("yyyy-MM-dd")).Style(regularText);
                     });
 
                     column.Item().AlignRight().MaxWidth(rowWidth).Row(row =>
                     {
-                        row.RelativeItem().AlignLeft().Text("Invoice due date").Style(boldText);
+                        row.RelativeItem().AlignLeft().Text("Invoice due date".ToCorrectLanguage(this)).Style(boldText);
                         row.RelativeItem().AlignRight().Text(InstanceConfiguration.IssueDate.AddDays(GeneralConfiguration?.DaysToPay ?? 30).ToString("yyyy-MM-dd")).Style(regularText);
                     });
                 });
