@@ -13,7 +13,7 @@ namespace InvoiceGenerator
     {
         static void Main(string[] args)
         {
-            args = new string[] { "augusti.csv" };
+            //args = new string[] { "augusti.csv" };
 
             if (args.Length == 0)
             {
