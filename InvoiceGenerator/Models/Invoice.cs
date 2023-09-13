@@ -5,7 +5,6 @@ using QuestPDF.Drawing;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
-using System.Reflection;
 
 namespace InvoiceGenerator.Models
 {
@@ -56,6 +55,18 @@ namespace InvoiceGenerator.Models
                     page.Content().Element(ComposeContent);
                     page.Footer().Element(ComposeFooter);
                 });
+
+            if (GeneralConfiguration.IncludeBreakdown && TimeExport != null && TimeExport.Times != null && TimeExport.Times.All(x => x.Description != null))
+            {
+                container.Page(page =>
+                {
+                    page.MarginVertical(40);
+                    page.MarginHorizontal(35);
+
+                    page.Content().Element(ComposeSummaryPage);
+
+                });
+            }
         }
 
         private void ComposeHeader(IContainer container)
@@ -199,7 +210,7 @@ namespace InvoiceGenerator.Models
                         columns.RelativeColumn();
                         columns.RelativeColumn(1.4f);
 
-                        if(GeneralConfiguration.IncludeTax)
+                        if (GeneralConfiguration.IncludeTax)
                         {
                             columns.RelativeColumn(1.3f);
                             columns.RelativeColumn(2f);
@@ -216,7 +227,7 @@ namespace InvoiceGenerator.Models
                         header.Cell().Element(CellStyle).AlignRight().Text("Unit".ToCorrectLanguage(this)).Style(boldText);
                         header.Cell().Element(CellStyle).AlignRight().Text("Unit price".ToCorrectLanguage(this)).Style(boldText);
 
-                        if(GeneralConfiguration.IncludeTax)
+                        if (GeneralConfiguration.IncludeTax)
                         {
                             header.Cell().Element(CellStyle).AlignRight().Text("VAT%".ToCorrectLanguage(this)).Style(boldText);
                             header.Cell().Element(CellStyle).AlignRight().Text("VAT".ToCorrectLanguage(this)).Style(boldText);
@@ -230,23 +241,23 @@ namespace InvoiceGenerator.Models
                         }
                     });
 
-                    if (TimeExport.Times == null)
+                    if (TimeExport.CollapsedTimes == null)
                         throw new GenerationException("TimeExport is missing times. Can not generate invoice without information about times");
 
-                    foreach (Time item in TimeExport.Times)
+                    foreach (Time item in TimeExport.CollapsedTimes)
                     {
                         if (item.Name == null)
                             throw new GenerationException("Missing name for time entry");
 
                         int unitPrice = GeneralConfiguration.GetUnitPrice(item.Name);
 
-                        table.Cell().Element(CellStyle).Text((TimeExport.Times.IndexOf(item) + 1).ToString()).Style(regularText);
+                        table.Cell().Element(CellStyle).Text((TimeExport.CollapsedTimes.IndexOf(item) + 1).ToString()).Style(regularText);
                         table.Cell().Element(CellStyle).Text(item.Name).Style(regularText);
                         table.Cell().Element(CellStyle).AlignRight().Text(item.Amount.ToString()).Style(regularText);
                         table.Cell().Element(CellStyle).AlignRight().Text("hours".ToCorrectLanguage(this)).Style(regularText);
                         table.Cell().Element(CellStyle).AlignRight().Text($"{unitPrice.ToPriceString("SEK".ToCorrectLanguage(this))}").Style(regularText);
 
-                        if(GeneralConfiguration.IncludeTax)
+                        if (GeneralConfiguration.IncludeTax)
                         {
                             table.Cell().Element(CellStyle).AlignRight().Text("25%").Style(regularText);
                             table.Cell().Element(CellStyle).AlignRight().Text($"{(item.Amount * unitPrice * 0.25).ToPriceString("SEK".ToCorrectLanguage(this))}").Style(regularText);
@@ -297,7 +308,7 @@ namespace InvoiceGenerator.Models
                     });
                 });
 
-                if(!string.IsNullOrEmpty(InstanceConfiguration.Comment))
+                if (!string.IsNullOrEmpty(InstanceConfiguration.Comment))
                 {
                     column.Item().MinHeight(30);
 
@@ -359,6 +370,68 @@ namespace InvoiceGenerator.Models
                     });
 
                     row.AutoItem().Width(100);
+                });
+            });
+        }
+
+        private void ComposeSummaryPage(IContainer container)
+        {
+            if (TimeExport == null || TimeExport.Times == null)
+                throw new GenerationException("TimeExport is missing times. Can not generate invoice without information about times");
+
+            container.Column(column =>
+            {
+                column.Item().AlignCenter().Row(row =>
+                {
+                    Dictionary<string, List<Time>> timesByName = TimeExport.Times.GroupBy(x => x.Name).ToDictionary(g => g.Key!, g => g.ToList());
+
+                    foreach (string key in timesByName.Keys)
+                    {
+                        column.Item().Text($"{key}:").SemiBold();
+                        column.Item().MinHeight(5);
+
+                        decimal total = 0;
+                        column.Item().Background("F5F5F5").Padding(tablePadding).Table(table =>
+                        {
+                            table.ColumnsDefinition(columns =>
+                            {
+                                columns.RelativeColumn(2.8f);
+                                columns.RelativeColumn(1.2f);
+                            });
+
+                            table.Header(header =>
+                            {
+                                header.Cell().Element(CellStyle).Text("Description".ToCorrectLanguage(this)).Style(boldText);
+                                header.Cell().Element(CellStyle).AlignRight().Text("Hours".ToCorrectLanguage(this)).Style(boldText);
+
+                                static IContainer CellStyle(IContainer container)
+                                {
+                                    return container.DefaultTextStyle(x => x.SemiBold()).PaddingVertical(5).BorderBottom(1).BorderColor(Colors.Black);
+                                }
+                            });
+
+                            foreach (Time item in timesByName[key])
+                            {
+                                if (item.Name == null)
+                                    throw new GenerationException("Missing name for time entry");
+
+                                table.Cell().Element(CellStyle).Text(item.Description).Style(regularText);
+                                table.Cell().Element(CellStyle).AlignRight().Text(item.RawAmount.ToString("0.00")).Style(regularText);
+
+                                static IContainer CellStyle(IContainer container)
+                                {
+                                    return container.BorderBottom(1).BorderColor(Colors.Grey.Lighten2).PaddingVertical(5);
+                                }
+
+                                total += item.RawAmount;
+                            }
+                        });
+
+                        column.Item().MinHeight(5);
+                        column.Item().AlignRight().Text($"{"Total".ToCorrectLanguage(this)} {total.ToString("0.00")} h");
+
+                        column.Item().MinHeight(20);
+                    }
                 });
             });
         }

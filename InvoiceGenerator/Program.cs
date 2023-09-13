@@ -13,7 +13,7 @@ namespace InvoiceGenerator
     {
         static void Main(string[] args)
         {
-            //args = new string[] { "Clockify_Time_Report_Summary_01_03_2023-31_03_2023.csv" };
+            args = new string[] { "augusti.csv" };
 
             if (args.Length == 0)
             {

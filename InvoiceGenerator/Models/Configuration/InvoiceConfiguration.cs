@@ -11,6 +11,7 @@ namespace InvoiceGenerator.Models.Configuration
         public int DaysToPay { get; set; }
         public bool IncludeTax { get; set; }
         public bool Swedish { get; set; }
+        public bool IncludeBreakdown { get; set; }
         public Company? Sender { get; set; }
         public Company? Receiver { get; set; }
         public PaymentInformation? PaymentInformation { get; set; }
@@ -23,6 +24,7 @@ namespace InvoiceGenerator.Models.Configuration
             DaysToPay = 30,
             IncludeTax = true,
             Swedish = true,
+            IncludeBreakdown = true,
             Sender = new Company
             {
                 Name = "Sakur",

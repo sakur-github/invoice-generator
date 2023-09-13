@@ -33,6 +33,7 @@ namespace InvoiceGenerator.Helpers
             { "VAT%", "Moms %" },
             { "VAT", "Moms" },
             { "Comment:", "Kommentar:" },
+            { "Hours", "Timmar" },
         };
 
         public static string ToCorrectLanguage(this string text, Invoice invoice)
@@ -40,7 +41,7 @@ namespace InvoiceGenerator.Helpers
             if (!invoice.GeneralConfiguration.Swedish)
                 return text;
 
-            if(englishToSwedishDictionary.TryGetValue(text, out string? swedish))
+            if (englishToSwedishDictionary.TryGetValue(text, out string? swedish))
                 return swedish;
 
             return $"[missing translation for {text}";

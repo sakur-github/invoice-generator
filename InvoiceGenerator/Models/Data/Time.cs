@@ -12,7 +12,9 @@ namespace InvoiceGenerator.Models.Data
         public string? Project { get; set; }
         public string? Client { get; set; }
         public int Amount { get { return (int)Math.Round(amount); } }
+        public string? Description { get; set; }
 
+        public decimal RawAmount { get { return amount; } }
         private decimal amount;
 
         public Time() { }

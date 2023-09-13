@@ -16,22 +16,22 @@ namespace InvoiceGeneratorTests
             TimeExport timeExport = TimeExport.FromCsv(csv);
 
             Assert.IsNotNull(timeExport);
-            Assert.IsNotNull(timeExport.Times);
-            Assert.AreEqual(3, timeExport.Times.Count);
+            Assert.IsNotNull(timeExport.CollapsedTimes);
+            Assert.AreEqual(3, timeExport.CollapsedTimes.Count);
             
-            Time firstTime = timeExport.Times[0];
+            Time firstTime = timeExport.CollapsedTimes[0];
             Assert.AreEqual("Adam Tovatt", firstTime.Name);
             Assert.AreEqual("Careless", firstTime.Project);
             Assert.IsNull(firstTime.Client);
             Assert.AreEqual(66, firstTime.Amount);
 
-            Time secondTime = timeExport.Times[1];
+            Time secondTime = timeExport.CollapsedTimes[1];
             Assert.AreEqual("Ludvig Svedberg", secondTime.Name);
             Assert.AreEqual("Careless", secondTime.Project);
             Assert.IsNull(secondTime.Client);
             Assert.AreEqual(10, secondTime.Amount);
 
-            Time thirdTime = timeExport.Times[2];
+            Time thirdTime = timeExport.CollapsedTimes[2];
             Assert.AreEqual("Oliver Levay", thirdTime.Name);
             Assert.AreEqual("Careless", thirdTime.Project);
             Assert.IsNull(thirdTime.Client);
@@ -48,14 +48,19 @@ namespace InvoiceGeneratorTests
             TimeExport timeExport = TimeExport.FromCsv(csv);
 
             Assert.IsNotNull(timeExport);
+            Assert.IsNotNull(timeExport.CollapsedTimes);
+            Assert.AreEqual(1, timeExport.CollapsedTimes.Count);
             Assert.IsNotNull(timeExport.Times);
-            Assert.AreEqual(1, timeExport.Times.Count);
 
-            Time firstTime = timeExport.Times[0];
+            Time firstTime = timeExport.CollapsedTimes[0];
             Assert.AreEqual("Adam Tovatt", firstTime.Name);
             Assert.AreEqual("Retriva", firstTime.Project);
             Assert.IsNull(firstTime.Client);
             Assert.AreEqual(4, firstTime.Amount);
+
+            Assert.IsTrue(timeExport.Times.Count > timeExport.CollapsedTimes.Count);
+
+            Assert.IsTrue(timeExport.Times.First().Description != null);
         }
     }
 }

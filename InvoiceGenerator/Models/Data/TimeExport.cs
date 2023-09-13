@@ -11,7 +11,8 @@ namespace InvoiceGenerator.Models.Data
 {
     public class TimeExport
     {
-        public List<Time>? Times { get; set; }
+        public List<Time>? CollapsedTimes { get; private set; }
+        public List<Time>? Times { get; private set; }
 
         private Dictionary<string, int> headerIndexes;
 
@@ -27,33 +28,57 @@ namespace InvoiceGenerator.Models.Data
 
             TimeExport exportedTimes = new TimeExport(GetHeaderIndexes(lines[0]));
 
+            int? userHeaderIndex = exportedTimes.GetHeaderIndex("User");
+            int? projectHeaderIndex = exportedTimes.GetHeaderIndex("Project");
+            int? clientHeaderIndex = exportedTimes.GetHeaderIndex("Client");
+            int? amountHeaderIndex = exportedTimes.GetHeaderIndex("Duration (decimal)", "Time (decimal)");
+            int? descriptionHeaderIndex = exportedTimes.GetHeaderIndex("Description");
+
             foreach (string line in lines.Skip(1))
             {
                 string[] values = line.Split(',');
 
-                string? name = values[exportedTimes.GetHeaderIndex("User")].GetUnescapedValue();
-                string? project = values[exportedTimes.GetHeaderIndex("Project")].GetUnescapedValue();
-                string? client = values[exportedTimes.GetHeaderIndex("Client")].GetUnescapedValue();
-                decimal amount = decimal.Parse(values[exportedTimes.GetHeaderIndex("Duration (decimal)", "Time (decimal)")].GetUnescapedValue(), CultureInfo.InvariantCulture);
+                string? name = null;
+                string? project = null;
+                string? client = null;
+                string? description = null;
+                decimal? amount = null;
 
-                name = string.IsNullOrEmpty(name) ? null : name; // if the string is empty we make it null instead
+                if (userHeaderIndex != null) name = values[userHeaderIndex.Value].GetUnescapedValue();
+                if(projectHeaderIndex != null) project = values[projectHeaderIndex.Value].GetUnescapedValue();
+                if(clientHeaderIndex != null) client = values[clientHeaderIndex.Value].GetUnescapedValue();
+                if(amountHeaderIndex != null) amount = decimal.Parse(values[amountHeaderIndex.Value].GetUnescapedValue(), CultureInfo.InvariantCulture);
+                if(descriptionHeaderIndex != null) description = values[descriptionHeaderIndex.Value].GetUnescapedValue();
+                
+                name = GetNullInsteadOfEmptyString(name); // if the string is empty we make it null instead
                 project = string.IsNullOrEmpty(project) ? null : project;
                 client = string.IsNullOrEmpty(client) ? null : client;
 
-                Time time = new Time(name, project, client, amount);
+                if (amount == null)
+                    throw new GenerationException("Amount was missing for a time entry, this is not allowed");
 
-                if (time.Client == "(Without client)") // Clockify exports null as "(Without client)"
-                    time.Client = null;
+                if (client == "(Without client)") // Clockify exports null as "(Without client)"
+                    client = null;
+
+                Time time = new Time(name, project, client, amount.Value) { Description = description };
 
                 times.Add(time);
             }
 
-            exportedTimes.Times = Time.CollapseTimes(times);
+            exportedTimes.CollapsedTimes = Time.CollapseTimes(times);
+            exportedTimes.Times = times;
 
             return exportedTimes;
         }
 
-        private int GetHeaderIndex(string header, params string[] additionalHeaders)
+        private static string? GetNullInsteadOfEmptyString(string? text)
+        {
+            if (text == null) return null;
+            if(text.Length == 0) return null;
+            return text;
+        }
+
+        private int? GetHeaderIndex(string header, params string[] additionalHeaders)
         {
             if (headerIndexes.ContainsKey(header))
                 return headerIndexes[header];
@@ -64,7 +89,7 @@ namespace InvoiceGenerator.Models.Data
                     return headerIndexes[additionalHeader];
             }
 
-            throw new GenerationException($"Could not find header {header} in the exported times");
+            return null;
         }
 
         private static Dictionary<string, int> GetHeaderIndexes(string firstLine)
@@ -83,13 +108,13 @@ namespace InvoiceGenerator.Models.Data
 
         public int GetTotalCost(InvoiceConfiguration configuration)
         {
-            if (Times == null)
+            if (CollapsedTimes == null)
                 throw new GenerationException("Trying to get total cost but there is no time data");
 
-            if (Times.Any(time => time.Name == null))
+            if (CollapsedTimes.Any(time => time.Name == null))
                 throw new GenerationException("Trying to get total cost but there is a time entry without a name");
 
-            return Times.Sum(time => time.Amount * configuration.GetUnitPrice(time.Name!));
+            return CollapsedTimes.Sum(time => time.Amount * configuration.GetUnitPrice(time.Name!));
         }
     }
 }
