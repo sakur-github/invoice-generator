@@ -47,7 +47,7 @@ namespace InvoiceGenerator.Models.Data
                 if (userHeaderIndex != null) name = values[userHeaderIndex.Value].GetUnescapedValue();
                 if(projectHeaderIndex != null) project = values[projectHeaderIndex.Value].GetUnescapedValue();
                 if(clientHeaderIndex != null) client = values[clientHeaderIndex.Value].GetUnescapedValue();
-                if(amountHeaderIndex != null) amount = decimal.Parse(values[amountHeaderIndex.Value].GetUnescapedValue(), CultureInfo.InvariantCulture);
+                if(amountHeaderIndex != null) amount = GetDecimal(values[amountHeaderIndex.Value].GetUnescapedValue());
                 if(descriptionHeaderIndex != null) description = values[descriptionHeaderIndex.Value].GetUnescapedValue();
                 
                 name = GetNullInsteadOfEmptyString(name); // if the string is empty we make it null instead
@@ -69,6 +69,18 @@ namespace InvoiceGenerator.Models.Data
             exportedTimes.Times = times;
 
             return exportedTimes;
+        }
+
+        private static decimal GetDecimal(string value)
+        {
+            try
+            {
+                return decimal.Parse(value, CultureInfo.InvariantCulture);
+            }
+            catch(Exception exception)
+            {
+                throw new Exception($"Error when parsing {value} to a decimal", exception);
+            }
         }
 
         private static string? GetNullInsteadOfEmptyString(string? text)
