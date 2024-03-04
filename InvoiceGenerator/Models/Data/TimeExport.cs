@@ -36,7 +36,7 @@ namespace InvoiceGenerator.Models.Data
 
             foreach (string line in lines.Skip(1))
             {
-                string[] values = line.Split(',');
+                string[] values = line.Split("\",");
 
                 string? name = null;
                 string? project = null;

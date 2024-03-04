@@ -11,7 +11,9 @@ namespace InvoiceGenerator.Helpers
     {
         public static string GetUnescapedValue(this string value)
         {
-            return value.Substring(1, value.Length - 2);
+            if (value[value.Length - 1] == '"')
+                return value.Substring(1, value.Length - 2);
+            return value.Substring(1, value.Length - 1);
         }
 
         public static string ToDateString(this DateTime date)
@@ -70,7 +72,7 @@ namespace InvoiceGenerator.Helpers
 
             string[] parts = toString.Split('.');
 
-            if(parts.Length == 2)
+            if (parts.Length == 2)
                 result.Append($".{parts[1]}");
 
             if (currency != null)
